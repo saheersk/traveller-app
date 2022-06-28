@@ -9,9 +9,9 @@ A blog website uses Reactjs in frontend and Django backend. This project helped 
 - Single page for each place
 
 ## Api pages sample:
-![](https://github.com/saheersk/Blog/blob/master/static/images/travel-login.png)
-![](https://github.com/saheersk/Blog/blob/master/static/images/travel-home.png)
-![](https://github.com/saheersk/Blog/blob/master/static/images/travel-single.png)
+![](https://github.com/saheersk/traveller-app/blob/master/static/images/travel-login.png)
+![](https://github.com/saheersk/traveller-app/blob/master/static/images/travel-home.png)
+![](https://github.com/saheersk/traveller-app/blob/master/static/images/travel-single.png)
 
  ## Usage:
 
