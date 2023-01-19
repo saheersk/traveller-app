@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from places.models import Gallery, Place
+from places.models import Gallery, Place, Comment
 from rest_framework import serializers
 
 
@@ -14,6 +14,19 @@ class GallerySerializer(ModelSerializer):
         fields = ("id", "image")
         model = Gallery
 
+
+class CommentSerializer(ModelSerializer):
+    user = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
+    class Meta:
+        fields = ("id", "user", "date", "comment")
+        model = Comment
+    
+    def get_user(self, instance):
+        return instance.user.first_name
+
+    def get_date(self, instance):
+        return instance.date.strftime("%d %B %Y")
 
 class PlaceDetailSerializer(ModelSerializer):
 
@@ -32,5 +45,7 @@ class PlaceDetailSerializer(ModelSerializer):
         images = Gallery.objects.filter(place=instance)
         serializer = GallerySerializer(images, many=True, context={"request": request})
         return serializer.data
+
+
 
          
