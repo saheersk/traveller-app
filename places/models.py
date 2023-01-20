@@ -12,6 +12,8 @@ class Place(models.Model):
     description = models.TextField()
     is_deleted = models.BooleanField(default=False)
 
+    likes = models.ManyToManyField("auth.User")
+
     class Meta:
         db_table = "places_place"
 
@@ -55,3 +57,10 @@ class Comment(models.Model):
     def __str__(self):
         return str(self.id)
 
+
+# class Like(models.Model):
+#     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+#     place = models.ForeignKey("places.Place", on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return str(self.id)

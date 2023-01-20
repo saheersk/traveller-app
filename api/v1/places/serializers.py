@@ -4,10 +4,22 @@ from rest_framework import serializers
 
 
 class PlaceSerializer(ModelSerializer):
+    likes = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+
     class Meta:
-        fields = ("id", "name", "featured_image", "place")
+        fields = ("id", "name", "featured_image", "place", "likes", "is_liked")
         model = Place
 
+    def get_likes(self, instance):
+        return instance.likes.count()
+
+    def get_is_liked(self, instance):
+        request = self.context.get("request")
+        if instance.likes.filter(username=request.user.username).exists():
+            return True
+        else:
+            return False
 
 class GallerySerializer(ModelSerializer):
     class Meta:
@@ -32,9 +44,11 @@ class PlaceDetailSerializer(ModelSerializer):
 
     category = serializers.SerializerMethodField()
     gallery = serializers.SerializerMethodField()
+    likes = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ("id", "name", "featured_image", "place", "description", "category", "gallery")
+        fields = ("id", "name", "featured_image", "place", "description", "category", "gallery", "likes", "is_liked")
         model = Place
 
     def get_category(self, instance):
@@ -45,6 +59,16 @@ class PlaceDetailSerializer(ModelSerializer):
         images = Gallery.objects.filter(place=instance)
         serializer = GallerySerializer(images, many=True, context={"request": request})
         return serializer.data
+
+    def get_likes(self, instance):
+        return instance.likes.count()
+
+    def get_is_liked(self, instance):
+        request = self.context.get("request")
+        if instance.likes.filter(username=request.user.username).exists():
+            return True
+        else:
+            return False
 
 
 

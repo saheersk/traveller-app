@@ -172,29 +172,66 @@ def comment_create(request, pk):
 
     return Response(response_data)
 
-    # content =  request.data['content']
-    # author = request.user
-    # place = Place.objects.get(pk=pk)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def like(request, pk):
+    if Place.objects.filter(pk=pk).exists():
+        instance = Place.objects.get(pk=pk)
+
+        if instance.likes.filter(username=request.user.username).exists():
+            instance.likes.remove(request.user)
+            message = "Liked removed"
+        else:
+            instance.likes.add(request.user)
+            message = "Liked added"
+
+        response_data = {
+            "status_code": 6000,
+            "data": message,
+        }
+
+    else:
+        response_data = {
+            "status_code": 6001,
+            "message": "Place not exists",
+        }
+
+    return Response(response_data)
 
 
-    # print(content, '=========', author, "========", place.id)
 
-    # comment = Comment.objects.create(
-    #     content=content,
-    #     author=author,
-    #     place=place
-    # )
 
-    # context = {
-    #     "request": request
-    # }
+    # if Place.objects.filter(pk=pk).exists():
+    #     place = Place.objects.get(pk=pk)
+    #     user = request.user
 
-    # serializer = CommentSerializer(comment, context=context)
+    #     liked = Like.objects.filter(user=user, place=place).count()
 
-    # response_data = {
-    #     "status_code": 6000,
-    #     "data": serializer.data,
-    # }
+    #     if not liked:
+    #         liked = Like.objects.create(user=user, place=place)
+    #     else:
+    #         liked = Like.objects.filter(user=user, place=place).delete()
+
+    #     place.likes = Like.objects.filter(place=place).count()
+
+    #     context = {
+    #         "request": request
+    #     }
+
+    #     serializer = PlaceDetailSerializer(place, context=context)
+        
+    #     response_data = {
+    #         "status_code": 6000,
+    #         "data": serializer.data,
+    #     }
+
+    # else:
+    #     response_data = {
+    #         "status_code": 6001,
+    #         "message": "Place not exists",
+    #     }
 
     # return Response(response_data)
 
+            
