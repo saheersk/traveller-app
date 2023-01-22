@@ -123,7 +123,7 @@ def comment(request, pk):
     if Place.objects.filter(pk=pk).exists():
         place = Place.objects.get(pk=pk)
 
-        instances = Comment.objects.filter(place=place)
+        instances = Comment.objects.filter(place=place, parent_comment=None)
 
         context = {
             "request": request
@@ -149,15 +149,26 @@ def comment(request, pk):
 @permission_classes([IsAuthenticated])
 def comment_create(request, pk):
     if Place.objects.filter(pk=pk).exists():
-        instance = Place.objects.get(pk=pk)
+        place = Place.objects.get(pk=pk)
         comment = request.data['comment'] 
 
-        Comment.objects.create(
+        try:
+            parent_comment = request.data['parent_comment']
+        except:
+            parent_comment = None
+
+        instance = Comment.objects.create(
             user=request.user,
             comment=comment,
-            place=instance,
+            place=place,
             date=datetime.datetime.now()
         )
+
+        if parent_comment:
+            if Comment.objects.filter(pk=parent_comment).exists():
+                parent = Comment.objects.get(pk=parent_comment)
+                instance.parent_comment = parent
+                instance.save()
 
         response_data = {
             "status_code": 6000,
@@ -201,37 +212,3 @@ def like(request, pk):
 
 
 
-
-    # if Place.objects.filter(pk=pk).exists():
-    #     place = Place.objects.get(pk=pk)
-    #     user = request.user
-
-    #     liked = Like.objects.filter(user=user, place=place).count()
-
-    #     if not liked:
-    #         liked = Like.objects.create(user=user, place=place)
-    #     else:
-    #         liked = Like.objects.filter(user=user, place=place).delete()
-
-    #     place.likes = Like.objects.filter(place=place).count()
-
-    #     context = {
-    #         "request": request
-    #     }
-
-    #     serializer = PlaceDetailSerializer(place, context=context)
-        
-    #     response_data = {
-    #         "status_code": 6000,
-    #         "data": serializer.data,
-    #     }
-
-    # else:
-    #     response_data = {
-    #         "status_code": 6001,
-    #         "message": "Place not exists",
-    #     }
-
-    # return Response(response_data)
-
-            

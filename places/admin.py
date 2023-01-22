@@ -24,10 +24,8 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Comment, CommentAdmin)
 
 
-# class LikeAdmin(admin.ModelAdmin):
-#     list_display = ['id']
 
-# admin.site.register(Like, LikeAdmin)
+
 
 
 
